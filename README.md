@@ -2,9 +2,17 @@
 The main purpose of this is to update this to utilitze v2 of the Twitter API.  This will try to retain all functionality of the original scripts.
 
 ## Requirments
- 
+Updated requirements for new functionality
+* **_Be sure to install required depenendcies from the Pipfile_** 
 * **_see below for base requirements_**
 
+## New API
+* **The Console** - The Console will excute a certain set of commands the mimic the scripts.
+	* **Format** - /TheConsole?command=**command**&username=**username**
+		* **command** - The command to instruct The Console
+			* **grabuser** - Grabs the IDs and Metadata in JSON of an account's followers and following.
+			* **_Updated as new command instructions are added_**
+		* **username** - Twitter username of account to inspect
 
 ## New Scripts 
 * **grabuser2.sh** - Grabs the IDs and Metadata in JSON of an account's followers and following.
