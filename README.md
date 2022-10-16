@@ -8,11 +8,14 @@ Updated requirements for new functionality
 
 ## New API
 * **The Console** - The Console will excute a certain set of commands the mimic the scripts.
-	* **Format** - /TheConsole?command=**command**&username=**username**
-		* **command** - The command to instruct The Console
-			* **grabuser** - Grabs the IDs and Metadata in JSON of an account's followers and following.
-			* **_Updated as new command instructions are added_**
-		* **username** - Twitter username of account to inspect
+	* **command** - The command to instruct The Console
+		* **grabuser** - Grabs the IDs and Metadata in JSON of an account's followers and following.
+			* **FORMAT** - /TheConsole?command=grabuser&username=twitter_username
+		* **jsonsame** - Takes a username and a comparison username and will compare a list of their 
+		followers/following to find matches.
+			* **FORMAT** - /TheConsole?command=grabuser&username=twitter_username&comparison_username=twitter_username
+		* **_Updated as new command instructions are added_**
+	* **username** - Twitter username of account to inspect
 
 ## New Scripts 
 * **grabuser2.sh** - Grabs the IDs and Metadata in JSON of an account's followers and following.
