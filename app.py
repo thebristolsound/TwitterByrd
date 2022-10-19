@@ -1,5 +1,7 @@
 # flask libs for api functionality
 from flask import Flask, jsonify, request, abort
+from flask_cors import CORS
+
 # flask-restful
 from flask_restful import Resource, Api
 # marshmallow for querystring parsing
@@ -34,6 +36,7 @@ class CommandQuerySchema(Schema):
 # create app
 app = Flask(__name__)
 api = Api(app)
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 schema = CommandQuerySchema()
 
 # load config keys
@@ -139,5 +142,5 @@ def get_user_id(username):
 
 # driver function
 if __name__ == '__main__':
-    api.add_resource(TheConsole, '/TheConsole')
+    api.add_resource(TheConsole, '/api/theconsole', endpoint='theconsole', methods=['GET', 'POST'])
     app.run(debug=True)
