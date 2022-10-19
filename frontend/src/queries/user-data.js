@@ -1,12 +1,10 @@
-import { useQuery } from "@tanstack/react-query"
-import axios from "axios"
-
-
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
 
 export const useUserData = (username) =>
   useQuery(['user', username], () => fetchUserData(username),
     {
-      enabled: !!username,
+      enabled: !!username
     }
   )
 
