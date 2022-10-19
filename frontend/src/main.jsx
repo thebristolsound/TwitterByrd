@@ -1,13 +1,17 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import {
+  QueryClientProvider,
+  QueryClient
+} from '@tanstack/react-query'
+import {
   createBrowserRouter,
   RouterProvider
 } from 'react-router-dom'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+
 import './styles/index.css'
 import Root from './routes/root'
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import ErrorPage from './error-page'
 
 const qc = new QueryClient({
