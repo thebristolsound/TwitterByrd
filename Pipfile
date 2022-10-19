@@ -12,6 +12,7 @@ flask-restful = "*"
 marshmallow = "*"
 colorama = "*"
 flask-cors = "*"
+pandas = "*"
 
 [dev-packages]
 ipykernel = "*"
