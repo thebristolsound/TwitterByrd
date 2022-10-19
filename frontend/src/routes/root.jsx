@@ -11,7 +11,7 @@ const fetchUserData = async (username) => {
   return response.data
 }
 
-export default function Root() {
+export default function Root () {
   const [username, setUsername] = React.useState('')
   const [searchInput, setSearchInput] = React.useState('')
   const [formSubmitted, setFormSubmitted] = React.useState(false)
@@ -20,7 +20,7 @@ export default function Root() {
     { enabled: !!username && formSubmitted, refetchOnWindowFocus: false, refetchOnMount: false })
 
   const handleSearchChange = (event) => {
-    setUsername('');
+    setUsername('')
     setSearchInput(event.target.value)
     setFormSubmitted(false)
   }
@@ -88,9 +88,4 @@ export default function Root() {
       </footer>
     </>
   )
-}
-
-
-const DataTableContainer = () => {
-
 }
