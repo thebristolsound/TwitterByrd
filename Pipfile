@@ -10,6 +10,8 @@ jsonlines = "*"
 flask = "*"
 flask-restful = "*"
 marshmallow = "*"
+colorama = "*"
+flask-cors = "*"
 
 [dev-packages]
 ipykernel = "*"

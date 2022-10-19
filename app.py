@@ -1,5 +1,7 @@
 # flask libs for api functionality
 from flask import Flask, jsonify, request, abort
+from flask_cors import CORS
+
 # flask-restful
 from flask_restful import Resource, Api
 # marshmallow for querystring parsing
@@ -16,6 +18,7 @@ import enum
 # Enum to hold map commands to valid values (plus it looks nices when referencing in code \o/)
 class ValidCommands(enum.Enum):
     GRAB_USER = 'grabuser'
+    JSON_SAME = 'jsonsame'
 
 # iterable list of command values for easier validation
 valid_commands_values = [command.value for command in ValidCommands]
@@ -25,13 +28,15 @@ class CommandQuerySchema(Schema):
     def validate_command(c):
         if c not in valid_commands_values:
             raise ValidationError('The Console does not compute command {}'.format(c))
-
+    
     command = fields.Str(required=True, validate=validate_command, error_messages={'required': 'The Console requires a command', 'code': 400})
     username = fields.Str(required=True, error_messages={'required': 'The Console requires a target', 'code': 400})
+    comparison_username = fields.Str()
 
 # create app
 app = Flask(__name__)
 api = Api(app)
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 schema = CommandQuerySchema()
 
 # load config keys
@@ -52,14 +57,39 @@ class TheConsole(Resource):
            # grabuser script
            if command == ValidCommands.GRAB_USER.value:
                 return grab_users(username)
+           elif command == ValidCommands.JSON_SAME.value:
+                if args.get('comparison_username') is None:
+                    abort(400, "The Console requires a comparison username to perform a comparison command")    
+                comparison_username = args['comparison_username']
+                return json_same(username, comparison_username) 
+           else:
+                abort(400, "The Console rejects your query")
             #TODO implement other commands (scripts)
         except ValidationError as err:
             abort(400, err.messages)
 
 
+def json_same(primary_username, comparison_username):
+    """This functions main purpose is to mimic the jsonsame script. """
+    similiar_accounts = []
+    # grab followers and followings account ids for primary user
+    primary_users = grab_users(primary_username)
+    # grab followers and followings account ids for comparison user
+    comparison_users = grab_users(comparison_username)
+    # extract the id from the primary users followers/following accounts
+    primary_ids = []
+    for account in primary_users:
+        primary_ids.append(account['id'])
+    
+    # check for matching id from primary account against the comparision users accounts
+    for account in comparison_users:
+        if account['id'] in primary_ids:
+            similiar_accounts.append(account)
+    
+    return similiar_accounts
 
 def grab_users(username):
-    """This endpoints main purpose is to mimic the grabuser script. """
+    """This functions main purpose is to mimic the grabuser script. """
     # find userid of the username
     user_id = get_user_id(username).get('id')
     # grab the account ids of the follower accounts for this user
@@ -112,5 +142,5 @@ def get_user_id(username):
 
 # driver function
 if __name__ == '__main__':
-    api.add_resource(TheConsole, '/TheConsole')
+    api.add_resource(TheConsole, '/api/theconsole', endpoint='theconsole', methods=['GET', 'POST'])
     app.run(debug=True)
