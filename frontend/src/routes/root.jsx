@@ -101,7 +101,7 @@ const CustomToolbar = () => (
   <GridToolbarContainer>
     <GridToolbarColumnsButton />
     <GridToolbarFilterButton />
-    <GridToolbarExport  />
+    <GridToolbarExport />
     <GridToolbarQuickFilter />
   </GridToolbarContainer>
 )
