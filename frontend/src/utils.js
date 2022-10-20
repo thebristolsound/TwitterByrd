@@ -52,18 +52,30 @@ export function parseTableColumns (row = userMock) {
   })
 }
 
+export function parseTableRows (rows) {
+  return rows.map(row => {
+    return {
+      ...row,
+      followers_count: row.public_metrics.followers_count,
+      following_count: row.public_metrics.following_count,
+      listed_count: row.public_metrics.listed_count,
+      tweet_count: row.public_metrics.tweet_count
+    }
+  })
+}
+
 export const COLUMN_HEADERS = [
-  { field: 'created_at', headerName: 'created at', width: 200 },
-  { field: 'description', headerName: 'description', width: 200 },
-  { field: 'entities', headerName: 'entities', width: 200 },
-  { field: 'id', headerName: 'id', width: 200 },
-  { field: 'profile_image_url', headerName: 'profile image url', width: 200 },
-  { field: 'protected', headerName: 'protected', width: 200 },
+  { field: 'id', headerName: 'id', width: 130 },
+  { field: 'username', headerName: 'username', width: 130 },
+  { field: 'description', headerName: 'description', width: 130 },
+  // { field: 'entities', headerName: 'entities', width: 200 },
+  { field: 'profile_image_url', headerName: 'profile image', width: 130 },
+  { field: 'protected', headerName: 'protected', width: 30 },
   { field: 'followers_count', headerName: 'followers count', width: 200 },
   { field: 'following_count', headerName: 'following count', width: 200 },
   { field: 'listed_count', headerName: 'listed count', width: 200 },
   { field: 'tweet_count', headerName: 'tweet count', width: 200 },
   { field: 'url', headerName: 'url', width: 200 },
-  { field: 'username', headerName: 'username', width: 200 },
-  { field: 'verified', headerName: 'verified', width: 200 }
+  { field: 'verified', headerName: 'verified', width: 30 },
+  { field: 'created_at', headerName: 'created at', width: 120 }
 ]

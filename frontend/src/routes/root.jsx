@@ -1,22 +1,20 @@
 
 import React from 'react'
-import axios from 'axios'
-import { useQuery } from '@tanstack/react-query'
-import { Button, Container, FormControl, FormGroup, TextField } from '@mui/material'
-import { DataGrid } from '@mui/x-data-grid'
-import { COLUMN_HEADERS } from '../utils'
 
-const fetchUserData = async (username) => {
-  const response = await axios.get(`http://localhost:5000/api/theconsole?command=grabuser&username=${username}`)
-  return response.data
-}
+import { useQuery } from '@tanstack/react-query'
+import { Button, Container, FormControl, FormGroup, MenuItem, Select, TextField } from '@mui/material'
+import { DataGrid, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarExport, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid'
+import { COLUMN_HEADERS } from '../utils'
+import { fetchAccounts, GET_FOLLOWERS, GET_FOLLOWING, GET_MUTUALS } from '../queries/users'
+import Sidebar from '../components/Sidebar'
 
 export default function Root () {
   const [username, setUsername] = React.useState('')
   const [searchInput, setSearchInput] = React.useState('')
+  const [searchAction, setSearchAction] = React.useState(GET_FOLLOWERS)
   const [formSubmitted, setFormSubmitted] = React.useState(false)
 
-  const query = useQuery(['grabusers', username], () => fetchUserData(username),
+  const query = useQuery(['data', searchAction, username], () => fetchAccounts(username, searchAction),
     { enabled: !!username && formSubmitted, refetchOnWindowFocus: false, refetchOnMount: false })
 
   const handleSearchChange = (event) => {
@@ -31,44 +29,53 @@ export default function Root () {
     setFormSubmitted(true)
   }
 
+  const handleSearchActionChange = (event) => {
+    setFormSubmitted(false)
+    setSearchAction(event.target.value)
+  }
+
   return (
     <>
       <div className="w-full flex flex-col sm:flex-row flex-grow overflow-hidden">
-        <div className="sm:w-1/3 md:1/4 w-full flex-shrink flex-grow-0 p-4">
-          <div className="sticky top-0 p-4 bg-gray-100 rounded-xl w-full">
-            <ul className="flex sm:flex-col overflow-hidden content-center justify-between">
-              <li className="py-2 hover:bg-indigo-300 rounded">
-                <a className="truncate" href="/">
-                  <img alt="dashboard" src="//cdn.jsdelivr.net/npm/heroicons@1.0.1/outline/home.svg" className="w-7 sm:mx-2 mx-4 inline" />
-                  <span className="hidden sm:inline">Dashboard</span>
-                </a>
-              </li>
-              <li className="py-2 hover:bg-indigo-300 rounded">
-                <a className="truncate" href="/settings">
-                  <img alt="settings" src="//cdn.jsdelivr.net/npm/heroicons@1.0.1/outline/cog.svg" className="w-7 sm:mx-2 mx-4 inline" /> <span className="hidden sm:inline">Settings</span>
-                </a>
-              </li>
-            </ul>
-          </div>
+        <div className="sm:w-1/3 md:1/4 lg:w-1/4 w-full flex-shrink p-4">
+          <Sidebar />
         </div>
         <main role="main" className="w-full h-full flex-grow p-3 overflow-auto">
-          <Container maxWidth="xl">
-            <FormGroup row>
+          <Container maxWidth="xl" disableGutters>
+            <FormGroup row >
               <FormControl>
                 <TextField label="Twitter Username" varient="filled" id="username" type="text" onChange={handleSearchChange} value={searchInput} />
               </FormControl>
-              <Button variant="outlined" onClick={handleSearchSubmit} disabled={formSubmitted || !searchInput}>Search</Button>
+              <Select
+                label="Select an action"
+                id="action"
+                name="action"
+                value={searchAction}
+                onChange={handleSearchActionChange}
+              >
+                <MenuItem value={GET_FOLLOWERS}>Followers</MenuItem>
+                <MenuItem value={GET_FOLLOWING}>Following</MenuItem>
+                <MenuItem value={GET_MUTUALS}>Mutuals</MenuItem>
+              </Select>
+              <Button variant="contained" onClick={handleSearchSubmit} disabled={formSubmitted || !searchInput}>Populate</Button>
+
             </FormGroup>
             {query.error && <div>Error: {query.error.message}</div>}
             {query && (
-              <div style={{ height: 400, width: '100%' }}>
+              <div style={{ minHeight: 700, width: '100%' }}>
                 <DataGrid
                   loading={query.isFetching}
                   rows={query.data ?? []}
                   columns={COLUMN_HEADERS}
                   pageSize={50}
                   rowsPerPageOptions={[25, 50, 100]}
-                  checkboxSelection
+                  headerHeight={50}
+
+                  components={
+                    {
+                      Toolbar: CustomToolbar
+                    }
+                  }
                   disableSelectionOnClick
                 />
               </div>
@@ -89,3 +96,12 @@ export default function Root () {
     </>
   )
 }
+
+const CustomToolbar = () => (
+  <GridToolbarContainer>
+    <GridToolbarColumnsButton />
+    <GridToolbarFilterButton />
+    <GridToolbarExport  />
+    <GridToolbarQuickFilter />
+  </GridToolbarContainer>
+)
