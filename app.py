@@ -24,6 +24,7 @@ class ValidCommands(enum.Enum):
     GET_FOLLOWERS = 'get-followers'
     GET_FOLLOWING = 'get-following'
     GET_MUTUALS = 'get-mutuals'
+    GET_LIKED_TWEETS = 'get-liked-tweets'
 
 # iterable list of command values for easier validation
 valid_commands_values = [command.value for command in ValidCommands]
@@ -73,6 +74,8 @@ class TheConsole(Resource):
                return get_following(username)
            elif command == ValidCommands.GET_MUTUALS.value:
                return get_mutuals(username)
+           elif command == ValidCommands.GET_LIKED_TWEETS.value:
+                return get_liked_tweets(username)
            else:
                 abort(400, "The Console rejects your query")
             #TODO implement other commands (scripts)
@@ -151,7 +154,20 @@ def get_mutuals(username):
 
      #returns a list of json user objects
     return mutuals
-    
+
+def get_liked_tweets(username):
+    liked_tweets = []
+    # find userid of the username
+    user_id = get_user_id(username).get('id')
+    # iterate over pages of the accounts liked tweets
+    for i, liked_tweet_page in enumerate(twarc.liked_tweets(user_id)):
+        for liked_tweet in ensure_flattened(liked_tweet_page.get('data')):
+            liked_tweets.append(liked_tweet)
+        # stop at one page for testing purposes
+        break
+
+    # return a list of json liked-tweet objects
+    return liked_tweets
 
 def get_following_ids(user_id):
     """Grab the user_ids of the accounts the user is following"""
@@ -176,6 +192,7 @@ def get_followers_ids(user_id):
     return account_ids
 
 def get_users(user_ids):
+    """Grab the details of the users"""
     users = []
     # lookup users accounts
     for i, user_page in enumerate(twarc.user_lookup(user_ids)):
@@ -189,6 +206,7 @@ def get_user_id(username):
     """Grab the user_id of the username """
     for i, user_page in enumerate(twarc.user_lookup({username}, usernames=True)):
         return ensure_flattened(user_page.get('data'))[0]
+
 
 # driver function
 if __name__ == '__main__':
