@@ -17,7 +17,7 @@ import ErrorPage from './error-page'
 const qc = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 10
+      staleTime: 1000 * 60 * 60 * 24 // 24 hours
     }
   }
 })
