@@ -12,9 +12,8 @@ export default defineConfig({
         [
           '@babel/preset-react'
       ]],
-      babelrc: true,
+      babelrc: false,
       configFile: false,
-
     },
   })],
 })

@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "yarn jest --watch"
   },
   "engines": {
     "node": ">=16.17.1"
@@ -24,7 +25,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.2",
-    "styled-components": "^5.3.6"
+    "styled-components": "^5.3.6",
+    "vitest": "^0.25.1"
   },
   "devDependencies": {
     "@babel/core": "^7.19.6",
